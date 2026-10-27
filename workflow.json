@@ -1,0 +1,258 @@
+{
+  "name": "lict3",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Invoice",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Select in Invoice",
+              "fieldType": "file",
+              "fieldName": "Invoice",
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "customCss": ":root {\n\t/* اللون الأساسي: Hot Pink (5462-0000) */\n\t--color-accent: #ff69b4; \n\t\n\t/* الخلفية: ترابية فاتحة جداً (Sand-toned) تناسب هوية بصرية خليجية حديثة */\n\t--color-background: #f4efed; \n\t\n\t--color-test-notice-text: #6b6155;\n\t--color-test-notice-bg: #ece6e1;\n\t--color-test-notice-border: #dcd3cc;\n\t\n\t--color-card-bg: #ffffff;\n\t--color-card-border: #e6ded3;\n\t--color-card-shadow: rgba(107, 97, 85, 0.08); /* ظل ناعم وترابي */\n\t\n\t--color-link: #d63384; /* الوردي الفاشن للروابط */\n\t--color-header: #3f3a33; /* لون هيدر رسمي وداكن */\n\t--color-label: #5a5246;\n\t\n\t--color-input-border: #dcd3cc;\n\t--color-input-text: #4a443c;\n\t--color-focus-border: #ff69b4; /* التركيز بالوردي لإعطاء طابع عصري */\n\t\n\t--color-submit-btn-bg: #ff69b4;\n\t--color-submit-btn-text: #ffffff;\n\t\n\t--color-error: #c24b3a;\n\t--color-required: #ff69b4;\n\t\n\t--color-clear-button-bg: #7b6b55;\n\t--color-html-text: #4a443c;\n\t--color-html-link: #ff69b4;\n\t--color-header-subtext: #8a7f70;\n}"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -16,
+        -176
+      ],
+      "id": "ed258208-5471-4578-aba4-5d153f465ad4",
+      "name": "On form submission"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Invoice",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        -176
+      ],
+      "id": "45f8b4ab-3bab-48ba-95b7-cedb5b57db33",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "# Tasks\nExtract the following fields from the invoice data provided:\n1. invoice_date: Extract the date and format it as DD/MM/YYYY (e.g., 06/05/2026).\n2. supplier_name: Identify the entity or company name issuing the invoice.\n3. total_amount: Extract the numerical total value of the invoice.\n4. currency: Identify the currency (e.g., USD, EUR, JOD).\n\n# Constraints\n- If any value is missing, return \"N/A\".\n- Do not add conversational text.\n- Only provide the JSON output.\n\n# Output Format\n{\n  \"invoice_date\": \"string\",\n  \"supplier_name\": \"string\",\n  \"total_amount\": \"number or string\",\n  \"currency\": \"string\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        432,
+        -176
+      ],
+      "id": "68e1d106-349c-42da-bd28-7f35776b990d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.output }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "invoice_date",
+              "type": "date",
+              "description": "{{ $fromAI('invoice_date') }}"
+            },
+            {
+              "name": "=supplier_name",
+              "description": "={{ $fromAI('supplier_name') }}"
+            },
+            {
+              "name": "total_amount",
+              "type": "number",
+              "description": "={{ $fromAI('total_amount') }}"
+            },
+            {
+              "name": "currency",
+              "description": "={{ $fromAI('currency') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        784,
+        -176
+      ],
+      "id": "56a7cd0f-bd59-4ba2-957e-0a1c7fc78282",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "YmZf74mh20HEiK04",
+          "mode": "list",
+          "cachedResultName": "pdf_invoice",
+          "cachedResultUrl": "/projects/Mu2V5XYJdTEZKrQo/datatables/YmZf74mh20HEiK04"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "invoice_date": "={{ $json.output.invoice_date }}",
+            "supplier_name": "={{ $json.output.supplier_name }}",
+            "total_amount": "={{ $json.output.total_amount }}",
+            "currency": "={{ $json.output.currency }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "invoice_date",
+              "displayName": "invoice_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "supplier_name",
+              "displayName": "supplier_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "total_amount",
+              "displayName": "total_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "currency",
+              "displayName": "currency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1136,
+        -176
+      ],
+      "id": "40395b0d-8968-4f15-8505-0ef2e7ba610d",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        512,
+        48
+      ],
+      "id": "c4855ca8-2561-4354-93ff-575784102ab5",
+      "name": "Google Gemini Chat Model"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {},
+  "tags": []
+}
