@@ -1,17 +1,21 @@
 # Invoice Data Extraction
 
-An n8n workflow concept for extracting structured invoice fields from PDF documents and storing results for review.
+I built this n8n workflow to extract structured information from PDF invoices and save the results in a data table.
+
+<img width="721" height="223" alt="Invoice Data Extraction workflow demo" src="https://github.com/user-attachments/assets/0c4fa823-3c60-4063-b668-b879796ca54c" />
+
+## How it works
+
+1. The user submits an invoice through a form.
+2. The workflow extracts the content from the uploaded PDF.
+3. The AI agent processes the extracted text.
+4. The Information Extractor organizes the invoice details into structured fields.
+5. The results are saved to an n8n Data Table.
+
+## Technologies
+
+n8n, Google Gemini, Information Extractor, PDF extraction, and n8n Data Tables.
 
 ## Setup
-1. Import the workflow JSON once added to this repository.
-2. Configure the input trigger, extraction model/API, and destination data table.
-3. Verify dates, supplier names, totals, and currencies against sample invoices.
-4. Add a human review step for low-confidence results.
 
-## Security
-Use synthetic invoices in demos and never commit real financial documents or credentials. End-to-end testing is not confirmed.
-
-## Project status
-This README documents the project scope and setup expectations. The workflow export must be present in the repository before it can be imported; validate the finished workflow in your own n8n instance before relying on it.
-
-<img width="721" height="223" alt="image" src="https://github.com/user-attachments/assets/0c4fa823-3c60-4063-b668-b879796ca54c" />
+Import [workflow.json](./workflow.json) into n8n, configure the Gemini credentials and form, and select the Data Table where the extracted invoice information will be stored.
