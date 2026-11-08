@@ -12,6 +12,14 @@ I built this n8n workflow to extract structured information from PDF invoices an
 4. The Information Extractor organizes the invoice details into structured fields.
 5. The results are saved to an n8n Data Table.
 
+## Main features
+
+- Invoice PDF upload through a form.
+- Automatic text extraction from PDF files.
+- AI-based invoice information processing.
+- Structured invoice field extraction.
+- Extracted results saved to an n8n Data Table.
+
 ## Technologies
 
 n8n, Google Gemini, Information Extractor, PDF extraction, and n8n Data Tables.
